@@ -2,6 +2,8 @@
 # api.py
 
 import os
+import sys
+sys.path.append(os.path.abspath(__file__).split("/flask/")[-2])
 from flask import Flask, jsonify, redirect, request, render_template, url_for
 
 
@@ -40,41 +42,31 @@ def get_endpoint_1_0():
            "<br>This API is currently under development, and is not intended for stable use."
 
 
+@app.route(os.path.join("/", app.config["API_NAME"].lower(), "api", "v1.0", "graph", "<string:type>"), methods=["GET"])
+def get_graph_url():
+    return url_for("static", filename="graphs/weekly.png")
+
+
 # API Docs
 # Version 1.0
 @app.route(os.path.join("/", app.config["API_NAME"].lower(), "docs", "v1.0"), methods=["GET"])
 def get_docs_1_0():
     content = [
         {
-            "title": "Generate Token",
-            "description": "Lorem ipsum dolor sit amet, <code>consectetur</code> adipiscing elit. Quisque nec venenatis est. Aliquam scelerisque bibendum volutpat. Donec vehicula tincidunt arcu, nec pellentesque neque dignissim eu. Duis a pretium sapien. Suspendisse efficitur eu metus ultrices suscipit. Mauris eget nulla a urna fermentum vulputate. Fusce ac leo rhoncus, convallis sem vel, blandit velit. Vestibulum pharetra dapibus nisi fermentum pretium.",
+            "title": "Get graph URL",
+            "request_type": "GET",
+            "url": os.path.join("/", app.config["API_NAME"].lower(), "api", "v1.0", "graph", "<string:type>"),
+            "description": "Retrieve the URL for the specified graph type.",
             "request": [
                 {
-                    "parameter": "authorization",
+                    "parameter": "type",
                     "type": "string",
                     "position": "header",
                     "required": "yes",
-                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                },
-                {
-                    "parameter": "username",
-                    "type": "string",
-                    "position": "body",
-                    "required": "yes",
-                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec venenatis est. Aliquam scelerisque bibendum volutpat. Donec vehicula tincidunt arcu, nec pellentesque neque dignissim eu."
+                    "description": "Type of graph to retrieve, options are 'weekly' and 'total'"
                 }
             ],
-            "response": """{
-    "status": true,
-    "result_code": 200,
-    "message": "Success!",
-    "values": {
-        "name": "Kiddy",
-        "email": "kiddydhana@gmail.com",
-        "token": "9WUzKE7kCI1vSuQAbrmOwc2m2dk1NbPR",
-        "account_status": "1"
-    }
-}"""
+            "response": "http://" + app.config["IP"] + ":" + str(app.config["PORT"]) + "/static/graphs/graph.png"
         }
     ]
     return render_template("docs.html", API_NAME=app.config["API_NAME"], content=content)

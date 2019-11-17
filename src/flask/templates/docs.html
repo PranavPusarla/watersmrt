@@ -18,7 +18,11 @@
             <div class="container-fluid">
                 {% for i in range(content|length) %}
                 <h3 class="page-title">{{content[i]['title']}}</h3>
-                <h4 class="page-title">{{content[i]['description']|safe}}</h4>
+                <h4 class="page-title">
+                    <code style="background-color: #6f6f6f; color: white;">{{content[i]['request_type'].upper()}} {{content[i]['url']}}</code>
+                    <br>
+                    <br>
+                    {{content[i]['description']|safe}}</h4>
                 <div class="row">
                     <div class="col-md-7">
                         <!-- TABLE HOVER -->
