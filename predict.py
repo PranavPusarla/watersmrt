@@ -11,8 +11,13 @@ def add(x):
     x[2] += x[1] + x[0]
     x[1] += x[0]
 
-def linear_reg(x, y):
+def addAll(x):
+    return x[6] + x[5] + x[4] + x[3] + x[2] + x[1] + x[0]
+
+def linear_reg(y):
+    total = addAll(y)
     add(y);
+    x = np.array([1,2,3,4,5,6,7])
 
     #placeholders for training data
     X = tf.placeholder("float")
@@ -24,7 +29,7 @@ def linear_reg(x, y):
 
     #parameters
     learning_rate = 0.01
-    training_epoch = 2000
+    training_epoch = 1000
 
     #7 days of the week
     n = 7
@@ -55,8 +60,8 @@ def linear_reg(x, y):
         bias = session.run(b)
 
     result = weight*x+bias
-    prediction = weight*14 + bias
-    # print("Predicted value at 2 weeks: ", prediction)
+    prediction = (weight*14 + bias) - total
+    # print("Predicted value next week: ", prediction)
     # plt.plot(x, y, 'ro', label='Original data')
     # plt.plot(x, result, label='Fitted line')
     # plt.title('Linear Regression Result')
@@ -71,4 +76,4 @@ def linear_reg(x, y):
 # plt.ylabel('y')
 # plt.title("Training Data")
 # plt.show()
-# linear_reg(x,y)
+# linear_reg(y)
