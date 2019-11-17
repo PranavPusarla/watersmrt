@@ -18,7 +18,7 @@
   * **Arduino Microcontroller** :pager:
     * Allows us to collect live data straight from the water sources and create a text document ready for processing straight from the hardware.
  
-## How it Works: :
+## How it Works: 
 After placing the waterflow sensor at any of the 4 primary water users of a household with a compatible valve (faucet, toilet, hose, or shower), our Arduino records the flowrate, total volume of water, and time of day and records the data in a temporary text file that gets deleted every week.:pencil: When the recording stops, the data is sent to an SQL database where it is stored for future predictions and graphing of previous weeks. The flow data will be graphed for the user to gain a visual representation of their consumption patterns and their data from the previous week will also be shown to show any potential improvements from before.
 
 Using a univariate linear regression model, the app will take the recommendations it made based on the data and will predict the savings you will gain when you implement the recommendations into your everyday life. This incentivizes users to conserve water, not only saving their wallets but also the environment! :moneybag: :deciduous_tree:
