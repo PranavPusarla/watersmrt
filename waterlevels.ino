@@ -17,7 +17,6 @@ void loop() {
   unsigned long currentMillis = millis();
   X = pulseIn(input, HIGH);
   Y = pulseIn(input, LOW);
-  unsigned long afterMillis = millis();
   
   // the time is one pulse period
   TIME = X + Y;
@@ -32,17 +31,15 @@ void loop() {
   if (FREQUENCY >= 0) {
     //Serial.println(FREQUENCY);
     if(!isinf(FREQUENCY)){
-      Serial.print("Before: ");
+      //Serial.print("Time: ");
       Serial.println(currentMillis);
-      Serial.print("After: ");
-      Serial.println(afterMillis);
       TOTAL = TOTAL + LS;
-      Serial.print("FLOW RATE: ");
-      Serial.print(WATER);
-      Serial.println(" Liters per Minute");
-      Serial.print("TOTAL VOLUME: ");
-      Serial.print(TOTAL);
-      Serial.println(" Liters");
+      //Serial.print("FLOW RATE: ");
+      Serial.println(WATER);
+      //Serial.println(" Liters per Minute");
+      //Serial.print("TOTAL VOLUME: ");
+      Serial.println(TOTAL);
+      //Serial.println(" Liters");
     }
   } 
 
