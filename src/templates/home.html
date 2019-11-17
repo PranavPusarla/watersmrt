@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <style>
+        body {
+            font-family: "Georgia";
+        }
+    </style>
+</head>
+<body>
+    <h1>{{API_NAME}} API Versions</h1>
+    {% for version in versions %}
+        <h3>{{API_NAME}} Version {{version}}</h3>
+        <ul>
+            <a href="/{{API_NAME.lower()}}/api/v{{version}}">Endpoint</a>
+            <a href="/{{API_NAME.lower()}}/docs/v{{version}}">Docs</a>
+        </ul>
+    {% endfor %}
+</body>
+</html>
