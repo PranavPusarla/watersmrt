@@ -12,7 +12,7 @@
   * **React Native** :iphone::computer:
     * This allows our interface to be compatible as an Android, iOS, and web app application, allowing for universal access across any device.
   * **Custom API using Flask** :outbox_tray:
-    * Our custom built API takes the image passed from the interface and sends it to our AWS S3 Bucket. From there, the image is then requested back from the API and sent to the Google Vision API, which analyzes the image and returns the formatted fuel type/price list. This list is then sent through a JSON request by the UI to be displayed to the user.
+    * Our custom built API takes data from the Arduino (connected to the waterflow sensor) and renders the data in various graphs, as well as calculates important statistics that are useful to the consumer. The API then sends a response back the front-end React Native App, displaying all the data for the user.
   * **SQLite Database** :memo:
     * Using a database allows us to keep a long-term record of water consumption, giving us the ability to make future predictions, compare the current rate with previous weeks, and estimate expected costs/savings over time.
   * **Arduino Microcontroller** :pager:

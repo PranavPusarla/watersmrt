@@ -8,6 +8,8 @@ if __name__ == "__main__":
 API_NAME = "WaterSMRT"
 VERSIONS = [1.0]
 IP = "0.0.0.0"
-PORT = 81
+PORT = 80
 
 HOME = "/"
+PRIVATE_IP = "143.215.63.236"
+DB_FILE = "/root/PycharmProjects/watersmrt/src/data/test.db"

@@ -4,7 +4,9 @@
 import os
 import sys
 sys.path.append(os.path.abspath(__file__).split("/flask/")[-2])
+from data import data
 from flask import Flask, jsonify, redirect, request, render_template, url_for
+from datetime import datetime
 
 
 app = Flask(__name__, template_folder="templates")
@@ -43,8 +45,40 @@ def get_endpoint_1_0():
 
 
 @app.route(os.path.join("/", app.config["API_NAME"].lower(), "api", "v1.0", "graph", "<string:type>"), methods=["GET"])
-def get_graph_url():
-    return url_for("static", filename="graphs/weekly.png")
+def get_graph_url(type):
+    if type == "weekly":
+        today = data.get_day(datetime.now().timestamp())
+        this_week = [data.total_day_water(app.config["DB_FILE"], "user", datetime.fromtimestamp(datetime.now().timestamp() - 86400 * (today - d)).date()) for d in range(0, today + 1)]
+        last_week = [data.total_day_water(app.config["DB_FILE"], "user", datetime.fromtimestamp(datetime.now().timestamp() - 86400 * (today - d + 7)).date()) for d in range(0, today + 1)]
+        data.weekly_graph(last_week, this_week)
+        return jsonify(["http://" + app.config["PRIVATE_IP"] + url_for("static", filename="graphs/weekly.png")])
+    elif type == "total":
+        total = data.total_week_water2(app.config["DB_FILE"], "user")
+        data.total_graph(total)
+        print(total)
+        return jsonify(["http://" + app.config["PRIVATE_IP"] + url_for("static", filename="graphs/total.png")])
+    else:
+        return ""
+
+
+@app.route(os.path.join("/", app.config["API_NAME"].lower(), "api", "v1.0", "total", "<string:period>"), methods=["GET"])
+def get_total_water(period):
+    if period == "weekly":
+        return data.total_water("test.db", "user")
+    elif period == "total":
+        return data.total_week_water("test.db", "user")
+    else:
+        return None
+
+
+@app.route(os.path.join("/", app.config["API_NAME"].lower(), "api", "v1.0", "average", "<string:period>"), methods=["GET"])
+def get_average_water(period):
+    if period == "weekly":
+        return data.total_week_water("test.db", "user") / 7
+    elif period == "total":
+        return data.total_week_water("test.db", "user") / 7
+    else:
+        return None
 
 
 # API Docs
