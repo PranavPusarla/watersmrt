@@ -10,7 +10,7 @@ write_to_file_path = "week.txt";
 
 output_file = open(write_to_file_path, "w+");
 ser = serial.Serial(serial_port, baud_rate)
-output_file.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + "\n")
+output_file.write(str(datetime.now().timestamp()) + "\n")
 count = 0
 while True:
     count += 1;
