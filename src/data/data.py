@@ -4,7 +4,7 @@
 import os
 import matplotlib.pyplot as plt
 from datetime import datetime
-from data.database import Database
+from database import Database
 
 
 def weekly_graph(last_week, this_week):
@@ -60,7 +60,7 @@ def total_week_water(db_file, table):
     query_response = database.query("SELECT timestamp, total FROM " + table + " ORDER BY timestamp ASC;")
     database.close()
     for i in range(len(query_response)):
-        if is_this_week(query_response[i][0]):
+        if is_same_week(query_response[i][0], datetime.now().timestamp()):
             if i == 0:
                 return query_response[-1][1]
             return query_response[-1][1] - query_response[i][1]
@@ -107,19 +107,7 @@ def total_day_water(db_file, table, date):
     return query_response[-1][1] if flag else 0
 
 
-def is_this_week(timestamp):
-    time = datetime.fromtimestamp(timestamp)
-    if abs(datetime.now().timestamp() - timestamp) <= 604800 and get_day(time.timestamp()) >= 0 and get_day(time.timestamp()) <= get_day(datetime.now().timestamp()):
-        return True
-    return False
-
-
 def is_same_week(timestamp1, timestamp2):
-    print(abs(timestamp2 - timestamp1))
-    print(get_day(timestamp1))
-    print(get_day(timestamp2))
-    print(timestamp1)
-    print(timestamp2)
     if abs(timestamp2 - timestamp1) <= 604800 and (get_day(timestamp1) >= get_day(timestamp2) and timestamp1 >= timestamp2) or (get_day(timestamp1) <= get_day(timestamp2) and timestamp1 <= timestamp2):
         return True
     return False
@@ -145,4 +133,4 @@ def get_day(timestamp):
 #print(total_week_water("test.db", "user"))
 #print(is_same_week(datetime(2019, 11, 16).timestamp(), datetime(2019, 11, 17).timestamp()))
 #weekly_graph([93, 92, 103, 104, 100, 96, 98], [83, 85, 89, 94, 87, 80, 95])
-#print(is_same_week(datetime.now().timestamp(), datetime(2019, 11, 16).timestamp()))
+print(is_same_week(datetime.now().timestamp(), datetime(2019, 11, 17, 0, 0, 0).timestamp()))
