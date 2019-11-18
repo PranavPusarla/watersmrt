@@ -55,7 +55,6 @@ def get_graph_url(type):
     elif type == "total":
         total = data.total_week_water2(app.config["DB_FILE"], "user")
         data.total_graph(total)
-        print(total)
         return jsonify(["http://" + app.config["PRIVATE_IP"] + url_for("static", filename="graphs/total.png")])
     else:
         return ""

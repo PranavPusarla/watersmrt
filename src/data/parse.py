@@ -26,7 +26,7 @@ def write_to_table(db_file, table, timestamps, rates, totals, source):
     database.close()
 
 
-filename = "sink.txt"
+filename = "faucet.txt"
 source = os.path.splitext(filename)[0]
 timestamps, rates, totals = read_file(filename)
 write_to_table("test.db", "user", timestamps, rates, totals, source)

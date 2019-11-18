@@ -115,9 +115,12 @@ def is_this_week(timestamp):
 
 
 def is_same_week(timestamp1, timestamp2):
-    time1 = datetime.fromtimestamp(timestamp1)
-    time2 = datetime.fromtimestamp(timestamp2)
-    if abs(timestamp2 - timestamp1) <= 604800 and (get_day(timestamp1) >= get_day(timestamp2) and timestamp1 <= timestamp2) or (get_day(timestamp1) <= get_day(timestamp2) and timestamp1 >= timestamp2):
+    print(abs(timestamp2 - timestamp1))
+    print(get_day(timestamp1))
+    print(get_day(timestamp2))
+    print(timestamp1)
+    print(timestamp2)
+    if abs(timestamp2 - timestamp1) <= 604800 and (get_day(timestamp1) >= get_day(timestamp2) and timestamp1 >= timestamp2) or (get_day(timestamp1) <= get_day(timestamp2) and timestamp1 <= timestamp2):
         return True
     return False
 
@@ -141,4 +144,5 @@ def get_day(timestamp):
 #print(times)
 #print(total_week_water("test.db", "user"))
 #print(is_same_week(datetime(2019, 11, 16).timestamp(), datetime(2019, 11, 17).timestamp()))
-weekly_graph([93, 92, 103, 104, 100, 96, 98], [83, 85, 89, 94, 87, 80, 95])
+#weekly_graph([93, 92, 103, 104, 100, 96, 98], [83, 85, 89, 94, 87, 80, 95])
+#print(is_same_week(datetime.now().timestamp(), datetime(2019, 11, 16).timestamp()))
