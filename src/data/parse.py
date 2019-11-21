@@ -20,6 +20,9 @@ def write_to_table(db_file, table, timestamps, rates, totals, source):
     database = Database(db_file)
     if not database.table_exists(table):
         database.create_table(table)
+    query_response = database.query("SELECT total FROM " + table + " ORDER BY timestamp ASC;")
+    if len(query_response) > 0:
+        totals = [str(query_response[-1][0] + float(x)) for x in totals]
     values = ", ".join(["(" + timestamps[i] + ", " + rates[i] + ", " + totals[i] + ", \"" + source + "\")" for i in range(len(timestamps))])
     database.query("INSERT INTO " + table + " (timestamp, rate, total, source) VALUES " + values + ";")
     database.commit()

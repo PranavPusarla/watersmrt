@@ -5,6 +5,8 @@ import os
 import sys
 sys.path.append(os.path.abspath(__file__).split("/flask/")[-2])
 from data import data
+from data.recommendations import recommendations
+from data.savings import savings
 from flask import Flask, jsonify, redirect, request, render_template, url_for
 from datetime import datetime
 
@@ -51,11 +53,11 @@ def get_graph_url(type):
         this_week = [data.total_day_water(app.config["DB_FILE"], "user", datetime.fromtimestamp(datetime.now().timestamp() - 86400 * (today - d)).date()) for d in range(0, today + 1)]
         last_week = [data.total_day_water(app.config["DB_FILE"], "user", datetime.fromtimestamp(datetime.now().timestamp() - 86400 * (today - d + 7)).date()) for d in range(0, today + 1)]
         data.weekly_graph(last_week, this_week)
-        return jsonify(["http://" + app.config["PRIVATE_IP"] + url_for("static", filename="graphs/weekly.png")])
+        return jsonify({"uri": "http://" + app.config["PRIVATE_IP"] + url_for("static", filename="graphs/weekly.png")})
     elif type == "total":
-        total = data.total_week_water2(app.config["DB_FILE"], "user")
+        total = data.total_weeks_water(app.config["DB_FILE"], "user")
         data.total_graph(total)
-        return jsonify(["http://" + app.config["PRIVATE_IP"] + url_for("static", filename="graphs/total.png")])
+        return jsonify({"uri": "http://" + app.config["PRIVATE_IP"] + url_for("static", filename="graphs/total.png")})
     else:
         return ""
 
@@ -63,9 +65,9 @@ def get_graph_url(type):
 @app.route(os.path.join("/", app.config["API_NAME"].lower(), "api", "v1.0", "total", "<string:period>"), methods=["GET"])
 def get_total_water(period):
     if period == "weekly":
-        return data.total_water("test.db", "user")
+        return data.total_week_water(app.config["DB_FILE"], "user", datetime.now().timestamp())
     elif period == "total":
-        return data.total_week_water("test.db", "user")
+        return data.total_water(app.config["DB_FILE"], "user")
     else:
         return None
 
@@ -73,11 +75,27 @@ def get_total_water(period):
 @app.route(os.path.join("/", app.config["API_NAME"].lower(), "api", "v1.0", "average", "<string:period>"), methods=["GET"])
 def get_average_water(period):
     if period == "weekly":
-        return data.total_week_water("test.db", "user") / 7
+        return data.total_week_water(app.config["DB_FILE"], "user", datetime.now().timestamp()) / 7
     elif period == "total":
-        return data.total_week_water("test.db", "user") / 7
+        return data.total_water(app.config["DB_FILE"], "user") / len(data.total_weeks_water(app.config["DB_FILE"], "user"))
     else:
         return None
+
+
+@app.route(os.path.join("/", app.config["API_NAME"].lower(), "api", "v1.0", "recommendations"), methods=["GET"])
+def get_recommendations():
+    return jsonify(recommendations(data.highest_source(app.config["DB_FILE"], "user")))
+
+
+@app.route(os.path.join("/", app.config["API_NAME"].lower(), "api", "v1.0", "highest_source"), methods=["GET"])
+def get_highest_source():
+    return jsonify({"source": data.highest_source(app.config["DB_FILE"], "user")})
+
+
+@app.route(os.path.join("/", app.config["API_NAME"].lower(), "api", "v1.0", "savings"), methods=["GET"])
+def get_savings():
+    saved = round(savings(data.total_week_water(app.config["DB_FILE"], "user", datetime.now().timestamp() - 604800), data.total_week_water(app.config["DB_FILE"], "user", datetime.now().timestamp())), 2)
+    return jsonify({"savings": ("-$" if saved < 0 else "$") + str(abs(saved))})
 
 
 # API Docs

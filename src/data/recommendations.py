@@ -1,6 +1,9 @@
+#!/usr/bin/python3
+# recommendations.py
+
 import requests
 from bs4 import BeautifulSoup
-from csv import writer
+
 
 def recommendations(keyword):
     link = "https://www.volusia.org/services/growth-and-resource-management/environmental-management/natural-resources/water-conservation/25-ways-to-save-water.stml"
@@ -24,7 +27,6 @@ def recommendations(keyword):
     hose = []
 
     for element in tip_list:
-        #print(element)
         if "toilet" in element:
             toilet.append(element)
         elif "shower" in element or "baths" in element:
@@ -34,11 +36,12 @@ def recommendations(keyword):
         elif "hose" in element or "lawn" in element or "cool" in element or "gutter" in element or "plants" in element or "broom" in element:
             hose.append(element)
 
-    if keyword == "Faucet":
+    if keyword.lower() == "faucet":
         return faucet
-    if keyword == "Toilet":
+    if keyword.lower() == "toilet":
         return toilet
-    if keyword == "Shower":
+    if keyword.lower() == "shower":
         return shower
-    if keyword == "Hose":
+    if keyword.lower() == "hose":
         return hose
+    return []

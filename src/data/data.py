@@ -4,11 +4,12 @@
 import os
 import matplotlib.pyplot as plt
 from datetime import datetime
-from database import Database
+from data.database import Database
 
 
 def weekly_graph(last_week, this_week):
     x = range(len(last_week))
+    plt.figure()
     plt.plot(x, last_week, "bo")
     plt.plot(x, this_week, "ro")
     plt.plot(x, last_week, "b", label="Last Week")
@@ -23,6 +24,7 @@ def weekly_graph(last_week, this_week):
 
 def total_graph(gallons):
     weeks = range(len(gallons))
+    plt.figure()
     plt.plot(gallons, "bo")
     plt.plot(weeks, gallons, "b")
     plt.xticks(weeks, ["Week " + str(x + 1) for x in weeks])
@@ -32,14 +34,14 @@ def total_graph(gallons):
     plt.savefig(os.path.join(os.path.abspath(__file__).split("/data/")[-2], "flask", "static", "graphs", "total.png"))
 
 
-def total_water_time(db_file, table):
+"""def total_water_time(db_file, table):
     database = Database(db_file)
     if not database.table_exists(table):
         database.close()
         return None
     query_response = database.query("SELECT timestamp FROM " + table + " ORDER BY timestamp DESC;")
     database.close()
-    return [x[0] for x in query_response]
+    return [x[0] for x in query_response]"""
 
 
 def total_water(db_file, table):
@@ -52,7 +54,7 @@ def total_water(db_file, table):
     return query_response[0][0]
 
 
-def total_week_water(db_file, table):
+def total_week_water(db_file, table, timestamp):
     database = Database(db_file)
     if not database.table_exists(table):
         database.close()
@@ -60,14 +62,14 @@ def total_week_water(db_file, table):
     query_response = database.query("SELECT timestamp, total FROM " + table + " ORDER BY timestamp ASC;")
     database.close()
     for i in range(len(query_response)):
-        if is_same_week(query_response[i][0], datetime.now().timestamp()):
+        if is_same_week(query_response[i][0], timestamp):
             if i == 0:
                 return query_response[-1][1]
             return query_response[-1][1] - query_response[i][1]
     return 0
 
 
-def total_week_water2(db_file, table):
+def total_weeks_water(db_file, table):
     database = Database(db_file)
     if not database.table_exists(table):
         database.close()
@@ -107,6 +109,22 @@ def total_day_water(db_file, table, date):
     return query_response[-1][1] if flag else 0
 
 
+def highest_source(db_file, table):
+    database = Database(db_file)
+    if not database.table_exists(table):
+        database.close()
+        return None
+    sources = [x[0] for x in database.query("SELECT DISTINCT source FROM " + table + ";")]
+    highest = 0
+    highest_source = sources[0]
+    for source in sources:
+        source_total = database.query("SELECT total FROM " + table + " WHERE source='" + source + "' ORDER BY timestamp ASC;")[-1][0]
+        if source_total > highest:
+            highest_source = source
+            highest = source_total
+    return highest_source
+
+
 def is_same_week(timestamp1, timestamp2):
     if abs(timestamp2 - timestamp1) <= 604800 and (get_day(timestamp1) >= get_day(timestamp2) and timestamp1 >= timestamp2) or (get_day(timestamp1) <= get_day(timestamp2) and timestamp1 <= timestamp2):
         return True
@@ -133,4 +151,4 @@ def get_day(timestamp):
 #print(total_week_water("test.db", "user"))
 #print(is_same_week(datetime(2019, 11, 16).timestamp(), datetime(2019, 11, 17).timestamp()))
 #weekly_graph([93, 92, 103, 104, 100, 96, 98], [83, 85, 89, 94, 87, 80, 95])
-print(is_same_week(datetime.now().timestamp(), datetime(2019, 11, 17, 0, 0, 0).timestamp()))
+#print(is_same_week(datetime.now().timestamp(), datetime(2019, 11, 17, 0, 0, 0).timestamp()))
